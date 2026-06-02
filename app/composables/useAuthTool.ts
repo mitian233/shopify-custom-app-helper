@@ -1,3 +1,5 @@
+const STORAGE_KEY = "shopify-auth-form";
+
 type AuthFormModel = {
   clientId: string;
   clientSecret: string;
@@ -43,7 +45,11 @@ function validateForm(model: AuthFormModel) {
     return "请填写完整的 app 凭据。";
   }
 
-  if (!/^[a-z0-9][a-z0-9-]*\.myshopify\.com$/i.test(normalizeShopValue(model.shop))) {
+  if (
+    !/^[a-z0-9][a-z0-9-]*\.myshopify\.com$/i.test(
+      normalizeShopValue(model.shop),
+    )
+  ) {
     return "商店地址必须是 xxx.myshopify.com。";
   }
 
@@ -61,6 +67,33 @@ export function useAuthTool() {
     shop: "",
     scopes: "",
   });
+
+  // 从 localStorage 恢复表单数据（仅客户端）
+  if (import.meta.client) {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved) as Partial<AuthFormModel>;
+        if (parsed) {
+          form.clientId = parsed.clientId ?? "";
+          form.clientSecret = parsed.clientSecret ?? "";
+          form.shop = parsed.shop ?? "";
+          form.scopes = parsed.scopes ?? "";
+        }
+      }
+    } catch {
+      // 数据损坏则忽略
+    }
+
+    // 表单变化时自动持久化
+    watch(
+      () => ({ ...form }),
+      (next) => {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      },
+      { deep: true },
+    );
+  }
 
   const pending = shallowRef(false);
   const copied = shallowRef(false);
