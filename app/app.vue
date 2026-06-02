@@ -33,9 +33,13 @@ useHead({
     <section class="hero">
       <div class="hero-copy">
         <p class="hero-eyebrow">Shopify OAuth Helper</p>
-        <h1 class="hero-title">获取自建 app 安装到商店后的 access token</h1>
+        <h1 class="hero-title">
+          Get the access token for a custom app installed on a store
+        </h1>
         <p class="hero-description">
-          填入 app 凭据、商店地址与 scopes，完成安装授权后即可在当前浏览器会话内查看 token。
+          Enter your app credentials, store domain, and scopes. After completing
+          the OAuth flow, you'll be able to view the access token in this
+          browser session.
         </p>
       </div>
     </section>

@@ -42,7 +42,7 @@ function normalizeScopesValue(scopes: string) {
 
 function validateForm(model: AuthFormModel) {
   if (!model.clientId.trim() || !model.clientSecret.trim()) {
-    return "请填写完整的 app 凭据。";
+    return "Please fill in all app credentials.";
   }
 
   if (
@@ -50,11 +50,11 @@ function validateForm(model: AuthFormModel) {
       normalizeShopValue(model.shop),
     )
   ) {
-    return "商店地址必须是 xxx.myshopify.com。";
+    return "Shop domain must be xxx.myshopify.com.";
   }
 
   if (!normalizeScopesValue(model.scopes)) {
-    return "请填写至少一个 scope。";
+    return "Please provide at least one scope.";
   }
 
   return "";
@@ -68,7 +68,7 @@ export function useAuthTool() {
     scopes: "",
   });
 
-  // 从 localStorage 恢复表单数据（仅客户端）
+  // Restore form data from localStorage (client only)
   if (import.meta.client) {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -82,10 +82,10 @@ export function useAuthTool() {
         }
       }
     } catch {
-      // 数据损坏则忽略
+      // Ignore corrupted data
     }
 
-    // 表单变化时自动持久化
+    // Auto-persist on form changes
     watch(
       () => ({ ...form }),
       (next) => {

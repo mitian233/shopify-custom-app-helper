@@ -1,23 +1,24 @@
 <template>
   <section class="panel">
     <div class="panel-header">
-      <p class="panel-eyebrow">使用说明</p>
-      <h2 class="panel-title">先完成 Shopify 后台配置</h2>
+      <p class="panel-eyebrow">Setup Guide</p>
+      <h2 class="panel-title">Complete the Shopify admin setup first</h2>
     </div>
     <ol class="guide-list">
       <li class="guide-item">
-        在 Shopify Partner Dashboard 打开你的 app。
+        Open your app in the Shopify Partner Dashboard.
       </li>
       <li class="guide-item">
-        将 <span class="guide-code">{{ callbackOrigin }}</span> 填到 App URL。
+        Set <span class="guide-code">{{ callbackOrigin }}</span> as the App URL.
       </li>
       <li class="guide-item">
-        将
+        Add
         <span class="guide-code">{{ callbackUrl }}</span>
-        加到 Allowed redirection URL(s)。
+        to Allowed redirection URL(s).
       </li>
       <li class="guide-item">
-        确认 app 已配置需要的 Admin API scopes，再开始授权。
+        Make sure your app has the required Admin API scopes configured before
+        you authorize.
       </li>
     </ol>
   </section>

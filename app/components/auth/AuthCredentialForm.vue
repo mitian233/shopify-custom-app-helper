@@ -1,10 +1,11 @@
 <template>
   <section class="panel">
     <div class="panel-header">
-      <p class="panel-eyebrow">应用凭据</p>
-      <h2 class="panel-title">填写当前要授权的 app 信息</h2>
+      <p class="panel-eyebrow">App Credentials</p>
+      <h2 class="panel-title">Enter the app details to authorize</h2>
       <p class="panel-copy">
-        `client_secret` 只用于当前浏览器会话内的授权，不会展示到页面地址里。
+        `client_secret` is only used for the current browser session and will
+        not appear in the URL.
       </p>
     </div>
 
@@ -16,7 +17,7 @@
           class="field-input"
           autocomplete="off"
           name="clientId"
-          placeholder="例如 1234567890abcdef"
+          placeholder="e.g. 1234567890abcdef"
           required
           @input="updateField('clientId', $event)"
         />
@@ -29,7 +30,7 @@
           class="field-input"
           autocomplete="off"
           name="clientSecret"
-          placeholder="例如 shpss_xxxxxxxxxxxxx"
+          placeholder="e.g. shpss_xxxxxxxxxxxxx"
           required
           type="password"
           @input="updateField('clientSecret', $event)"
@@ -60,7 +61,8 @@
           @input="updateField('scopes', $event)"
         />
         <span class="field-hint">
-          Shopify OAuth 需要明确传入 scopes。请填入 app 已申请的权限，逗号分隔。
+          Shopify OAuth requires scopes to be explicitly specified. Enter the
+          scopes your app requests, comma-separated.
         </span>
       </label>
 
@@ -70,7 +72,7 @@
 
       <div class="actions">
         <button class="primary-button" :disabled="pending" type="submit">
-          {{ pending ? "正在跳转授权" : "开始授权" }}
+          {{ pending ? "Redirecting\u2026" : "Start Authorization" }}
         </button>
         <button
           v-if="showReset"
@@ -78,7 +80,7 @@
           type="button"
           @click="emit('reset')"
         >
-          清空结果
+          Clear Result
         </button>
       </div>
     </form>

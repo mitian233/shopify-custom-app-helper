@@ -1,7 +1,7 @@
 <template>
   <section class="panel">
     <div class="panel-header">
-      <p class="panel-eyebrow">授权结果</p>
+      <p class="panel-eyebrow">Authorization Result</p>
       <h2 class="panel-title">{{ title }}</h2>
       <p class="panel-copy">{{ description }}</p>
     </div>
@@ -17,18 +17,14 @@
       </div>
       <label class="token-field">
         <span class="result-label">Access Token</span>
-        <textarea
-          :value="result.accessToken"
-          class="token-textarea"
-          readonly
-        />
+        <textarea :value="result.accessToken" class="token-textarea" readonly />
       </label>
       <div class="actions">
         <button class="primary-button" type="button" @click="emit('copy')">
-          {{ copied ? "已复制" : "复制 Token" }}
+          {{ copied ? "Copied!" : "Copy Token" }}
         </button>
         <button class="secondary-button" type="button" @click="emit('reset')">
-          重新获取
+          Get New Token
         </button>
       </div>
     </div>
@@ -36,13 +32,14 @@
     <div v-else-if="result?.status === 'error'" class="error-box">
       <p class="error-message">{{ result.message }}</p>
       <button class="secondary-button" type="button" @click="emit('reset')">
-        重试
+        Retry
       </button>
     </div>
 
     <div v-else class="empty-state">
       <p class="empty-copy">
-        授权完成后，当前浏览器会话对应的 access token 会显示在这里。
+        After authorization completes, the access token for your current browser
+        session will appear here.
       </p>
     </div>
   </section>
@@ -76,26 +73,26 @@ const emit = defineEmits<{
 
 const title = computed(() => {
   if (props.result?.status === "success") {
-    return "已成功获取商店 access token";
+    return "Store access token acquired";
   }
 
   if (props.result?.status === "error") {
-    return "这次授权没有成功";
+    return "Authorization failed";
   }
 
-  return "等待授权完成";
+  return "Waiting for authorization\u2026";
 });
 
 const description = computed(() => {
   if (props.result?.status === "success") {
-    return "这个 token 只对应当前填写的 app 与商店。复制后即可使用。";
+    return "This token is scoped to the app and store you entered. Copy it and use it right away.";
   }
 
   if (props.result?.status === "error") {
-    return "请检查 app 配置、redirect URL、scopes 和商店地址是否一致。";
+    return "Please verify your app settings, redirect URL, scopes, and shop domain are consistent.";
   }
 
-  return "页面不会共享其他人的授权状态。";
+  return "This page does not share authorization state with others.";
 });
 </script>
 
