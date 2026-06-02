@@ -1,0 +1,118 @@
+@import "tailwindcss";
+
+:root {
+  --bg-default: #f3f6f8;
+  --surface-default: #ffffff;
+  --surface-elevated: #fbfdff;
+  --surface-code: #f4f7fb;
+  --text-strong: #14212b;
+  --text-default: #223746;
+  --text-muted: #5c7080;
+  --border-default: #d7e1e8;
+  --border-strong: #c4d0d9;
+  --accent-fill: #117a65;
+  --accent-border: #0d6957;
+  --accent-text: #f5fffb;
+  --focus-ring: rgba(17, 122, 101, 0.28);
+  --danger-surface: #fff1f0;
+  --danger-text: #b42318;
+  --font-mono: "SFMono-Regular", "SF Mono", Consolas, "Liberation Mono",
+    Menlo, monospace;
+  color-scheme: light;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#__nuxt {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: linear-gradient(180deg, #eff4f6 0%, #f8fafb 100%);
+  color: var(--text-default);
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+.page-shell {
+  min-height: 100vh;
+  padding: 2rem 1.25rem 3rem;
+}
+
+.hero {
+  max-width: 1120px;
+  margin: 0 auto 1.5rem;
+}
+
+.hero-copy {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1.5rem 0 0.5rem;
+}
+
+.hero-eyebrow,
+.hero-description {
+  margin: 0;
+}
+
+.hero-eyebrow {
+  color: #476172;
+  font-size: 0.9rem;
+}
+
+.hero-title {
+  max-width: 18ch;
+  margin: 0;
+  color: var(--text-strong);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: 1.08;
+  text-wrap: balance;
+}
+
+.hero-description {
+  max-width: 56rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+.workspace-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.15fr);
+  gap: 1rem;
+  align-items: start;
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.workspace-grid > :last-child {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 900px) {
+  .page-shell {
+    padding-inline: 1rem;
+  }
+
+  .workspace-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .workspace-grid > :last-child {
+    grid-column: auto;
+  }
+
+  .hero-title {
+    max-width: 100%;
+    font-size: 2.35rem;
+  }
+}
