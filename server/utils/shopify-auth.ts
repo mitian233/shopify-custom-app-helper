@@ -180,14 +180,6 @@ function buildAuthContext(payload: StartAuthPayload): AuthContext {
   };
 }
 
-function setAuthContext(event: H3Event, context: AuthContext) {
-  setCookie(
-    event,
-    AUTH_COOKIE_NAME,
-    sealPayload(context, getSessionSecret()),
-    getCookieOptions(event, AUTH_COOKIE_TTL_SECONDS),
-  );
-}
 
 function getAuthContext(event: H3Event) {
   const sealed = getCookie(event, AUTH_COOKIE_NAME);
@@ -265,23 +257,40 @@ export async function beginAuth(event: H3Event, payload: StartAuthPayload) {
   const context = buildAuthContext(payload);
   const shopify = createShopifyClient(event, context);
 
-  setAuthContext(event, context);
-  deleteCookie(event, RESULT_COOKIE_NAME, { path: "/" });
+  // Seal auth context into a cookie value before the SDK takes over the response.
+  const secret = getSessionSecret();
+  const sealedContext = sealPayload(context, secret);
+  const protocol = getRequestProtocol(event, { xForwardedProto: true });
+  const secure = protocol === "https" ? "; Secure" : "";
+
+  const contextCookie =
+    `${AUTH_COOKIE_NAME}=${sealedContext}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${AUTH_COOKIE_TTL_SECONDS}${secure}`;
+  const resultDeleteCookie =
+    `${RESULT_COOKIE_NAME}=; Path=/; SameSite=Lax; Max-Age=0${secure}`;
+
+  // The SDK's begin() calls res.setHeader('Set-Cookie', sdkCookies) which
+  // overwrites any cookie h3 already placed.  Intercept that call and merge
+  // our cookies into the same array so everything ships in one response.
+  const rawRes = event.node.res;
+  const origSetHeader = rawRes.setHeader.bind(rawRes);
+  rawRes.setHeader = (name: string, value: unknown) => {
+    if (typeof name === "string" && name.toLowerCase() === "set-cookie") {
+      const cookies = Array.isArray(value) ? [...value] : [value];
+      cookies.push(contextCookie, resultDeleteCookie);
+      return origSetHeader(name, cookies);
+    }
+    return origSetHeader(name, value);
+  };
 
   await shopify.auth.begin({
     shop: context.shop,
     callbackPath: "/api/auth/callback",
     isOnline: false,
     rawRequest: event.node.req,
-    rawResponse: event.node.res,
+    rawResponse: rawRes,
   });
 }
 
-function applyShopifyHeaders(event: H3Event, headers: Record<string, string | string[]>) {
-  for (const [key, value] of Object.entries(headers)) {
-    event.node.res.setHeader(key, value);
-  }
-}
 
 export async function completeAuth(event: H3Event) {
   const context = getAuthContext(event);
@@ -292,8 +301,6 @@ export async function completeAuth(event: H3Event) {
       rawRequest: event.node.req,
       rawResponse: event.node.res,
     });
-
-    applyShopifyHeaders(event, callback.headers);
 
     const result: SuccessResult = {
       status: "success",
